@@ -1,10 +1,13 @@
 import mysql.connector
-def connection():
-    conn = mysql.connector.connect(host = "XXXXX",
-                  user = 'XXXXX',
-                  password = 'XXXXX',
-                  database = 'login_page',
-                  auth_plugin='mysql_native_password')
+def create_connection_mysql():
+    """ create a database connection to a SQLite database """
+    try:
+        connection = mysql.connector.connect(host='localhost', database='CricketDb', user='user', password='password')
+        print("connect successful!!")
+        return connection
+    except mysql.connector.Error as e:
+        print(e)
+    return None
 
-    c = conn.cursor()
-    return c , conn
+if __name__ == '__main__':
+    create_connection_mysql()

@@ -14,13 +14,13 @@ def create_connection_mysql():
     return None
 
 
-def getRowCount():
+def getRunCount(batsman,year):
     try:
         connection = create_connection_mysql()
         with connection.cursor() as cursor:
 
             # SQL
-            sql = "select count(*) from odi_ball_by_ball_v2;"
+            sql = "select count(runs_batsman) from odi_ball_by_ball_v2 where  batsman_name like'%Kohli%' and year=2019"
 
             # Execute query.
             cursor.execute(sql)
@@ -55,5 +55,5 @@ def truncate_table():
 
 
 if __name__ == '__main__':
-    getRowCount()
+    getRunCount("Kohli",2019)
     # truncate_table()
