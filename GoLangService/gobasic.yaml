@@ -1,0 +1,73 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: gobasic
+  name: gobasic
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gobasic
+  template:
+    metadata:
+      labels:
+        app: gobasic
+    spec:
+      containers:
+      - image: docker.apple.com/mmadhusoodan/go_basic
+        name: gobasic
+        ports:
+        - containerPort: 8080
+          name: web
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 5
+          timeoutSeconds: 30
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 10m
+            memory: 32Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gobasic
+  labels:
+    app: gobasic
+spec:
+  type: ClusterIP
+  ports:
+    - name: web
+      port: 8080
+      protocol: TCP
+      targetPort: web
+  selector:
+    app: gobasic
+---
+apiVersion: pie.apple.com/v1alpha1
+kind: AppleNetworkPolicy
+metadata:
+  name: whitelist-snip-gobasic
+spec:
+  selector:
+    app: gobasic
+  apps_incoming:
+    - app: plb.pie-plb.pie-prod
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: gobasic.us-west-2a.app.app.apple.com
+  annotations:
+    kubernetes.io/ingress.class: "plb.v1"
+spec:
+  backend:
+    serviceName: gobasic
+    servicePort: 8080
