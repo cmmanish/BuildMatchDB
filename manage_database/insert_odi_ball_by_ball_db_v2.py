@@ -1,10 +1,11 @@
 import fnmatch
 import os
+import mysql.connector
 from datetime import datetime
+import mysql
 import yaml
-import pymysql
 
-yaml_file_dir = '/Users/manish/Documents/yaml_dump/2021_male/'
+yaml_file_dir = '../yaml_dump/2015_male/'
 database_name="CricketDb"
 user_name="root"
 password="gofundme1"
@@ -93,18 +94,16 @@ def yaml2list(file_name):
                     db_row_list.append(row_tuple)
 
     return db_row_list
-
-
 pass
 
 
 def create_connection_mysql():
     """ create a database connection to a SQLite database """
     try:
-        connection = pymysql.connect(host='127.0.0.1', database=database_name, user=user_name, password=password)
+        connection = mysql.connector.connect(host='localhost', database='CricketDb', user='user', password='password')
         print("connect successful!!")
         return connection
-    except pymysql.Error as e:
+    except mysql.connector.Error as e:
         print(e)
     return None
 
@@ -123,7 +122,8 @@ def insertOneRowToDb(each_row):
             connection.commit()
             print(str(each_row[0]) + ' inserted to db')
 
-    except pymysql.Error as e:
+
+    except mysql.connector.Error as e:
         # Rolling back in case of error
         connection.rollback()
         print(e)
